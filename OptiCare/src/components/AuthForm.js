@@ -1,12 +1,10 @@
-import { Text, View, StyleSheet,TextInput, ScrollView, Image } from 'react-native';
+import { Text, View, StyleSheet,TextInput, Image, Pressable } from 'react-native';
 import { SelectList } from "react-native-dropdown-select-list";
 import Wallpaper from '../assets/hospital wallpaper.jpg'
-import Button from '../components/Button'
 
 import React, { useState } from 'react'
 
-const AuthForm = ({children}) => {
-    const [isLogin, setIsLogin] = useState(false);
+const AuthForm = ({children, isLogin, setIsLogin}) => {
     
   return (
     <View style={styles.container}>
@@ -15,8 +13,7 @@ const AuthForm = ({children}) => {
         {children}
 
         <View style={styles.bottomContainer}>
-            <Button label={isLogin ? 'Sign in': 'Sign up'} onClick={() => console.log("button pressed")}/>
-            <Text style={styles.toggleText} onPress={() => setIsLogin(!isLogin)}>
+            <Text style={styles.toggleText} onPress={() => {setIsLogin(!isLogin)}}>
                 {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
             </Text>
         </View>
@@ -68,8 +65,18 @@ const InputSelect = ({label, prompt, options, value, onChange}) => {
     );
 }
 
+
+const AuthButton = ({label, onPress}) => {
+    return(
+        <Pressable onPress={onPress} style={styles.button}>
+            <Text style={styles.label}>{label}</Text>
+        </Pressable>
+    );
+}
+
 AuthForm.InputText = InputText;
 AuthForm.InputSelect = InputSelect;
+AuthForm.AuthButton = AuthButton;
 
 
 
@@ -117,6 +124,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
       },
+      button: {
+        minHeight: 50,
+        maxHeight: 30,
+        borderWidth: 2,
+        borderRadius: 25,
+        borderColor: 'grey',
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 3,
+        marginBottom: 10,
+        flex: 1,
+        justifyContent: 'center',
+        width: 200,
+        alignItems: 'center'
+    },
       toggleText: {
         color: 'green'
       }

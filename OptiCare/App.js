@@ -7,6 +7,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 //Screens
 import LoginScreen from './src/screens/Login'
+import Home from './src/screens/Home';
 
 
 
@@ -19,6 +20,7 @@ export default function App() {
       <StatusBar style='light'/>
       <Drawer.Navigator initialRouteName='Login'>
         <Drawer.Screen name='Login' component={LoginScreen}/>
+        <Drawer.Screen name='Home' component={Home}/>
       </Drawer.Navigator>
     </NavigationContainer>
   );
