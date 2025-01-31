@@ -6,8 +6,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 
 //Screens
-import LoginScreen from './src/screens/Login'
-import Home from './src/screens/Home';
+import LoginScreen from './src/screens/AuthenticationScreen'
+import Home from './src/screens/HomeScreen';
 
 
 

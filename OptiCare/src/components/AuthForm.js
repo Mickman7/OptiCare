@@ -23,7 +23,7 @@ const AuthForm = ({children, isLogin, setIsLogin}) => {
 }
 
 
-const InputText = ({label, value, onChange}) => {
+const InputText = ({label, value, onChange, isPassword}) => {
     return(
         <View style={styles.item}>
             <Text style={styles.itemLabel}>{label}</Text>
@@ -32,6 +32,7 @@ const InputText = ({label, value, onChange}) => {
                 onChangeText={onChange}
                 style={styles.itemTextInput}
                 placeholder={label}
+                secureTextEntry={isPassword}
             />
         </View>
 

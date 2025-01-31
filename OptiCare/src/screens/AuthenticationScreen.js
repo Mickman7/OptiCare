@@ -80,10 +80,12 @@ const Login = ({navigation, route}) => {
             placeholder='Enter Email'
         />
         <AuthForm.InputText
+            
             label='Password'
             value={password}
             onChange={setPassword}
             placeholder='Enter Password'
+            isPassword={true}
 
         />
 
@@ -94,8 +96,9 @@ const Login = ({navigation, route}) => {
                 value={confirmPassword}
                 onChange={setConfirmPassword}
                 placeholder='Confirm Password'
-    
+                isPassword={true}
             />
+            
         ) : ''}
 
         <AuthForm.AuthButton 

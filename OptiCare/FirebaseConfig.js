@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from 'firebase/auth';
+import { getAuth, browserLocalPersistence, setPersistence } from 'firebase/auth';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -16,6 +16,18 @@ const firebaseConfig = {
   measurementId: "G-ZF47YZ2EV4"
 };
 
+
 // Initialize Firebase
-export const FIREBASE_APP = initializeApp(firebaseConfig);
-export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
+const FIREBASE_APP = initializeApp(firebaseConfig);
+const FIREBASE_AUTH = getAuth(FIREBASE_APP);
+
+setPersistence(FIREBASE_AUTH, browserLocalPersistence)
+  .then(() => {
+    console.log('Authentication state persistence is set to local.');
+  })
+  .catch((error) => {
+    console.error('Error setting persistence:', error);
+  });
+
+export { FIREBASE_APP, FIREBASE_AUTH };
+
