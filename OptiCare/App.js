@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useActionState, useEffect, useState, navigate } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuthState } from 'react-firebase-hooks/auth'
+import 'firebase/firestore'
 
 // import auth from '@react-native-firebase/auth';
 
@@ -17,6 +19,10 @@ import Home from './src/screens/HomeScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import CalendarScreen from './src/screens/CalendarScreen';
 import ChatScreen from './src/screens/ChatScreen';
+import SettingScreen from './src/screens/SettingScreen';
+
+
+import { FIREBASE_AUTH } from './FirebaseConfig';
 
 
 
@@ -50,34 +56,30 @@ function BottomTabs() {
   );
 }
 
-function DrawerNavigator() {
+function DrawerNavigator({navigation}) {
+
   return (
     <Drawer.Navigator>
       <Drawer.Screen name="Main" component={BottomTabs} />
-      {/* <Drawer.Screen name="Settings" component={SettingsScreen} /> */}
+      <Drawer.Screen name="Settings" component={SettingScreen} />
     </Drawer.Navigator>
   );
 }
 
 
-export default function App() {
 
-  // const [user, setUser] = useState(null);
 
-  // useEffect(() => {
-  //   const unsubscribe = auth().onAuthStateChanged((user) => {
-  //     setUser(user);
-  //   });
 
-  //   return unsubscribe; 
-  // }, []);
+export default function App({navigation}) {
+
+ const [user] = useAuthState(FIREBASE_AUTH)
 
 
   return (
     <>
     <NavigationContainer>
       <StatusBar style='auto'/>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName={user ? 'MainDrawer': 'Login'} screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="MainDrawer" component={DrawerNavigator} />
       </Stack.Navigator>
@@ -94,4 +96,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+ 
 });
