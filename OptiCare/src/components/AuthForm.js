@@ -8,14 +8,15 @@ const AuthForm = ({children, isLogin, setIsLogin}) => {
     
   return (
     <View style={styles.container}>
-        {/* <Image source={Wallpaper} style={styles.backgroundImg}/> */}
         <Text style={styles.formHeader}>{ isLogin ? "Welcome back" : "Register with us"}</Text>
-        {children}
+        <View style={styles.formContainer}>
+            {children}
 
-        <View style={styles.bottomContainer}>
-            <Text style={styles.toggleText} onPress={() => {setIsLogin(!isLogin)}}>
-                {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
-            </Text>
+            <View style={styles.bottomContainer}>
+                <Text style={styles.toggleText} onPress={() => {setIsLogin(!isLogin)}}>
+                    {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
+                </Text>
+            </View>
         </View>
 
     </View>
@@ -88,36 +89,48 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    backgroundImg: {
-        flex: 1,
-        // remove width and height to override fixed static size
-        width: null,
-        height: null,
+    formContainer: {
+        borderRadius: 10,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
+        backgroundColor: 'white',
+        shadowColor: 'black',
+        hadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+        elevation: 14,
+
     },
     formHeader: {
         fontSize: 40,
         fontWeight: 'bold',
         padding: 16,
         marginVertical: 40,
-        textAlign: 'center'
+        textAlign: 'center',
     },
     item: {
         padding: 16
     },
     itemLabel: {
-        color: 'grey',
+        color: 'black',
         fontSize: 16,
         marginBottom: 5,
     },
       itemTextInput: {
         height: 50,
-        width: 300,
+        width: 350,
         paddingLeft: 10,
         fontSize: 16,
-        backgroundColor: 'white',
+        backgroundColor: '#D9D9D9',
         borderRadius: 7,
         borderWidth: 1,
         borderColor: 'lightgray',
+
       },
       bottomContainer: {
         margin: 30,
@@ -128,18 +141,21 @@ const styles = StyleSheet.create({
       button: {
         minHeight: 50,
         maxHeight: 30,
-        borderWidth: 2,
         borderRadius: 25,
-        borderColor: 'grey',
-        backgroundColor: 'white',
+        backgroundColor: '#13AE85',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 3,
-        marginBottom: 10,
+        marginTop: 30,
         flex: 1,
         justifyContent: 'center',
         width: 200,
         alignItems: 'center'
+    },
+    label: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'semibold'
     },
       toggleText: {
         color: 'green'

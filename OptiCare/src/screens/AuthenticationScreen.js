@@ -1,8 +1,10 @@
-import { StyleSheet, Text, View} from 'react-native'
+import { StyleSheet, Text, View, ImageBackground} from 'react-native'
 import React, { useState,useEffect } from 'react'
 import AuthForm from '../components/AuthForm'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../FirebaseConfig"; 
+import Wallpaper from '../assets/hospital wallpaper.jpg'
+
 
 
 
@@ -43,74 +45,73 @@ const Login = ({navigation, route}) => {
       }
     
       try {
-        if (user) {
-          // If user is already authenticated, log out
-          console.log('User logged out successfully!');
-          await signOut(auth);
+        if (isLogin) {
+          // Sign in
+          await signInWithEmailAndPassword(auth, email, password);
+          navigation.navigate('MainDrawer')
+          console.log('User signed in successfully!');
         } else {
-          // Sign in or sign up
-          if (isLogin) {
-            // Sign in
-            await signInWithEmailAndPassword(auth, email, password);
-            navigation.navigate('Home')
-            console.log('User signed in successfully!');
-          } else {
-            // Sign up
-            await createUserWithEmailAndPassword(auth, email, password);
-            navigation.navigate('Home')
-            console.log('User created successfully!');
-          }
+          // Sign up
+          await createUserWithEmailAndPassword(auth, email, password);
+          navigation.navigate('Home')
+          console.log('User created successfully!');
         }
+        
       } catch (error) {
         console.error('Authentication error:', error.message);
       }
   };
 
   return (
-    <View style={styles.container}>
-      <AuthForm 
-        isLogin={isLogin}
-        setIsLogin={setIsLogin}
+      <ImageBackground
+        source={Wallpaper} 
+        style={styles.background}
       >
-
-        <AuthForm.InputText
-            label='Email'
-            value={email}
-            onChange={setEmail}
-            placeholder='Enter Email'
-        />
-        <AuthForm.InputText
-            
-            label='Password'
-            value={password}
-            onChange={setPassword}
-            placeholder='Enter Password'
-            isPassword={true}
-
-        />
-
-        {!isLogin ? (
+        <View style={styles.container}>
+          <AuthForm 
+            isLogin={isLogin}
+            setIsLogin={setIsLogin}
+          >
 
             <AuthForm.InputText
-                label='Confirm Password'
-                value={confirmPassword}
-                onChange={setConfirmPassword}
-                placeholder='Confirm Password'
-                isPassword={true}
+                label='Email'
+                value={email}
+                onChange={setEmail}
+                placeholder='Enter Email'
             />
+            <AuthForm.InputText
+                
+                label='Password'
+                value={password}
+                onChange={setPassword}
+                placeholder='Enter Password'
+                isPassword={true}
+
+            />
+
+            {!isLogin ? (
+
+                <AuthForm.InputText
+                    label='Confirm Password'
+                    value={confirmPassword}
+                    onChange={setConfirmPassword}
+                    placeholder='Confirm Password'
+                    isPassword={true}
+                />
+                
+            ) : ''}
+
+            <AuthForm.AuthButton 
+                label={isLogin ? 'Sign in': 'Sign up'} 
+                onPress={handleAuthentication}
+            />
+
             
-        ) : ''}
-
-        <AuthForm.AuthButton 
-            label={isLogin ? 'Sign in': 'Sign up'} 
-            onPress={handleAuthentication}
-        />
-
-        
 
 
-      </AuthForm>
-    </View>
+          </AuthForm>
+        </View>
+      </ImageBackground>
   )
 }
 
@@ -122,8 +123,10 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 1,
         padding: 16
 
+    },
+    background: {
+      flex: 1,
     }
 })
