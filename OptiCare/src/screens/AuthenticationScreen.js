@@ -53,7 +53,7 @@ const Login = ({navigation, route}) => {
         } else {
           // Sign up
           await createUserWithEmailAndPassword(auth, email, password);
-          navigation.navigate('Home')
+          navigation.navigate('MainDrawer')
           console.log('User created successfully!');
         }
         
@@ -114,6 +114,43 @@ const Login = ({navigation, route}) => {
       </ImageBackground>
   )
 }
+
+
+
+
+
+const userDetails = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+
+  return(
+    <View>
+      <AuthForm.InputText
+        label='First name'
+        value={firstName}
+        onChange={setFirstName}
+        placeholder='Enter first name'
+        
+      />
+      <AuthForm.InputText
+        label='Last name'
+        value={lastName}
+        onChange={setLastName}
+        placeholder='Enter last name'
+
+      />
+    </View>
+  );
+}
+
+
+
+
+
+
+
 
 export default Login
 

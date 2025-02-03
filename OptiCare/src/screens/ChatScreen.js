@@ -56,9 +56,8 @@ const ChatScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>ChatScreen</Text>
       <View style={styles.chatContainer}>
-        {messages && messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
+        {messages && messages.map((msg, i) => <ChatMessage key={i} message={msg} />)}
       </View>
       
       <View style={styles.sendMessageContainer}>
