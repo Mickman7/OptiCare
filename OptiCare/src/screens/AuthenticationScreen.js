@@ -8,8 +8,6 @@ import Wallpaper from '../assets/hospital wallpaper.jpg'
 
 
 
- 
-
 
 
 const Login = ({navigation, route}) => {
@@ -46,15 +44,17 @@ const Login = ({navigation, route}) => {
     
       try {
         if (isLogin) {
-          // Sign in
-          await signInWithEmailAndPassword(auth, email, password);
+          signInWithEmailAndPassword(auth, email, password);
           navigation.navigate('MainDrawer')
           console.log('User signed in successfully!');
+
         } else {
           // Sign up
           await createUserWithEmailAndPassword(auth, email, password);
-          navigation.navigate('MainDrawer')
-          console.log('User created successfully!');
+
+            // Navigate to MainDrawer and pass user data
+            navigation.navigate('Details');
+            console.log('User created successfully!');
         }
         
       } catch (error) {

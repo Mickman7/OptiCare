@@ -38,6 +38,7 @@ const SearchScreen = () => {
       const userData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setUserInfo(userData);
       setFilteredUsers(userData); // Initialize filteredUsers with all users
+      console.log(filteredUsers)
 
     } catch (err) {
       console.log('Fetch Error: ', err);

@@ -5,6 +5,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthState } from 'react-firebase-hooks/auth'
 import 'firebase/firestore'
@@ -20,6 +21,8 @@ import SearchScreen from './src/screens/SearchScreen';
 import CalendarScreen from './src/screens/CalendarScreen';
 import ChatScreen from './src/screens/ChatScreen';
 import SettingScreen from './src/screens/SettingScreen';
+import ChatListScreen from './src/screens/ChatListScreen';
+import UserDetailsScreen from './src/screens/UserDetailsScreen';
 
 
 import { FIREBASE_AUTH } from './FirebaseConfig';
@@ -30,6 +33,15 @@ import { FIREBASE_AUTH } from './FirebaseConfig';
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
+
+function ChatNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ChatList" component={ChatListScreen} />
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
+    </Stack.Navigator>
+  );
+}
 
 
 
@@ -43,14 +55,14 @@ function BottomTabs() {
           if (route.name === 'Home') iconName = 'home';
           else if (route.name === 'Search') iconName = 'search';
           else if (route.name === 'Calendar') iconName = 'calendar';
-          else if (route.name === 'Messages') iconName = 'mail';
+          else if (route.name === 'Chat') iconName = 'mail';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Calendar" component={CalendarScreen} />
-      <Tab.Screen name="Messages" component={ChatScreen} />
+      <Tab.Screen name="Chat" component={ChatNavigator} />
       <Tab.Screen name="Search" component={SearchScreen} />
     </Tab.Navigator>
   );
@@ -81,6 +93,7 @@ export default function App({navigation}) {
       <StatusBar style='auto'/>
       <Stack.Navigator initialRouteName={user ? 'MainDrawer': 'Login'} screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Details" component={UserDetailsScreen} />
         <Stack.Screen name="MainDrawer" component={DrawerNavigator} />
       </Stack.Navigator>
     </NavigationContainer>

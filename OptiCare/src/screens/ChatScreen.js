@@ -1,65 +1,101 @@
-import { Button, StyleSheet, Text, View, TextInput, Image, Dimensions } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig';
-import { collection, query, orderBy, limit, addDoc, serverTimestamp } from 'firebase/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { collection, query, orderBy, addDoc, serverTimestamp, onSnapshot, updateDoc, doc, where, getDocs } from 'firebase/firestore';
 import { Pressable } from 'react-native-gesture-handler';
 
-const ChatMessage = ({ message }) => {
-  const { text, uid, photoURL } = message;
-  const messageClass = uid === FIREBASE_AUTH.currentUser?.uid ? 'sent' : 'received';
-
-  return (
-    <View style={messageClass === 'sent' ? styles.sent : styles.received}>
-      <Image source={{ uri: photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png' }} style={styles.image} />
-      <Text>{text}</Text>
-    </View>
-  );
-};
-
-const ChatScreen = () => {
-  const [user] = useAuthState(FIREBASE_AUTH);
-  const messagesRef = collection(FIREBASE_DB, 'messages');
-  const messagesQuery = query(messagesRef, orderBy('createdAt'), limit(25));
-  const [messages] = useCollectionData(messagesQuery, { idField: 'id' });
+const ChatScreen = ({ route }) => {
+  const { chatId, userId, userFirstName, userLastName } = route.params;
+  const currentUser = FIREBASE_AUTH.currentUser;
+  const [messages, setMessages] = useState([]);
   const [formValue, setFormValue] = useState('');
 
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const messagesRef = collection(FIREBASE_DB, 'chats', chatId, 'messages');
+    const messagesQuery = query(messagesRef, orderBy('timestamp'));
+
+
+    const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+        setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    markMessagesAsRead();
+    return unsubscribe;
+}, [chatId]);
+
+ useEffect(() => {
+    const fetchMessages = async () => {
+      // Create a reference to the messages subcollection and order by timestamp
+      const messagesQuery = query(
+        collection(db, "chats", chatId, "messages"),
+        orderBy("timestamp")
+      );
+
+      // Get the messages from Firestore
+      const querySnapshot = await getDocs(messagesQuery);
+
+      // Map through the querySnapshot to extract the data and document ID
+      const messagesData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      // Set the messages to state
+      setMessages(messagesData);
+    };
+
+    // Call the function to fetch messages
+    fetchMessages();
+  }, [chatId]);
+
+
   const sendMessage = async () => {
-    console.log('working...')
-    if (!formValue.trim()) return; // Prevent empty messages
+    if (!formValue.trim()) return;
 
-    const { uid, photoURL } = FIREBASE_AUTH.currentUser;
-
-    console.log('working......')
+    const messagesRef = collection(FIREBASE_DB, 'chats', chatId, 'messages');
 
     const messageData = {
       text: formValue,
-      createdAt: serverTimestamp(), // Firestore timestamp
-      uid,
-      photoURL: photoURL || "https://example.com/default-avatar.png" // Ensure there's always an image
+      timestamp: serverTimestamp(),
+      senderId: currentUser.uid,
+      receiverId: userId,
+      read: false
     };
-
-    console.log("Sending message:", messageData); 
 
     try {
       await addDoc(messagesRef, messageData);
-      console.log("Message successfully sent!");
-      setFormValue(""); // Clear input after sending
+
+      // Update lastMessage in chat document
+      const chatRef = doc(FIREBASE_DB, 'chats', chatId);
+      await updateDoc(chatRef, {
+        lastMessage: formValue,
+        lastMessageTimestamp: serverTimestamp()
+      });
+
+      setFormValue('');
     } catch (error) {
       console.error("Error sending message:", error);
     }
-    
-    console.log('message sent')
-    setFormValue(''); // Clear input after sending
+  };
+
+  const markMessagesAsRead = async () => {
+    const messagesRef = collection(FIREBASE_DB, `chats/${chatId}/messages`);
+    const unreadQuery = query(messagesRef, where("receiverId", "==", currentUser.uid), where("read", "==", false));
+
+    const unreadMessages = await getDocs(unreadQuery);
+    unreadMessages.forEach(async (msg) => {
+      await updateDoc(doc(FIREBASE_DB, `chats/${chatId}/messages/${msg.id}`), { read: true });
+    });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.chatContainer}>
-        {messages && messages.map((msg, i) => <ChatMessage key={i} message={msg} />)}
+        {messages.map((msg, i) => <ChatMessage key={i} message={msg} />)}
       </View>
-      
+
       <View style={styles.sendMessageContainer}>
         <TextInput 
           style={styles.input} 
@@ -72,6 +108,17 @@ const ChatScreen = () => {
           <Text>Send</Text>
         </Pressable>
       </View>
+    </View>
+  );
+};
+
+const ChatMessage = ({ message }) => {
+  const { text, senderId } = message;
+  const isSent = senderId === FIREBASE_AUTH.currentUser?.uid;
+
+  return (
+    <View style={isSent ? styles.sent : styles.received}>
+      <Text style={styles.messageText}>{text}</Text>
     </View>
   );
 };
@@ -103,6 +150,7 @@ const styles = StyleSheet.create({
   chatContainer: {
     flex: 0, 
     paddingBottom: 20,
+    padding: 5
   },
   sendMessageContainer: {
     flexDirection: 'column',
