@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Button } from 'react-native'
 import React from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
+import OnlineStatus from './OnlineStatus'
 
-const img = "https://example.com/default-avatar.png"
 
 const UserItem = ({name, speciality, image}) => {
   return (
@@ -21,8 +21,9 @@ const UserCard = ({image, name}) => {
   return(
     <ScrollView horizontal={true}>
       <TouchableOpacity style={styles.userCardContainer} onPress={() => console.log(`You pressed user: ${name}`)}>
-        <Image style={styles.CardProfileImage} source={{ url: image }}/>
+        <Image style={styles.CardProfileImage} source={{ uri: image }}/>
         <Text style={styles.nameText}>{name}</Text>
+        <OnlineStatus label='Online'/>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -44,9 +45,15 @@ const styles = StyleSheet.create({
         width: 385
     },
     userCardContainer: {
-      borderWidth: 1,
+      borderWidth: 2,
       width: 100,
-      height: 100
+      height: 100,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderColor: 'lightgrey',
+      borderRadius: 10,
+      marginHorizontal: 5,
+      backgroundColor: 'white'
 
     },
     profileImage: {
@@ -60,6 +67,7 @@ const styles = StyleSheet.create({
     info: {
         flexDirection: 'column',
         margin: 10
-    }
+    },
+    
 
 })

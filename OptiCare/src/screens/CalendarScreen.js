@@ -65,7 +65,6 @@ export default CalendarScreen
 const styles = StyleSheet.create({
   calendarContainer: {
     flex: 1,
-    borderWidth: 1,
     borderColor: 'gray',
     height: 350,
   },

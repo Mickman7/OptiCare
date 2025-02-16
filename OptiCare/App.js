@@ -1,7 +1,7 @@
 import React, { useActionState, useEffect, useState, navigate } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator,DrawerContentScrollView, DrawerItemList,DrawerItem } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -23,6 +23,8 @@ import ChatScreen from './src/screens/ChatScreen';
 import SettingScreen from './src/screens/SettingScreen';
 import ChatListScreen from './src/screens/ChatListScreen';
 import UserDetailsScreen from './src/screens/UserDetailsScreen';
+
+import Chart from './src/components/Chart'; //Temp
 
 
 import { FIREBASE_AUTH } from './FirebaseConfig';
@@ -68,12 +70,25 @@ function BottomTabs() {
   );
 }
 
+
+function CustomDrawerContent(props) {
+  return (
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <TouchableOpacity onPress={() => console.log('Open profile')}>
+        <Text>Profile</Text>
+      </TouchableOpacity>
+    </DrawerContentScrollView>
+  );
+}
+
 function DrawerNavigator({navigation}) {
 
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />}>
       <Drawer.Screen name="Main" component={BottomTabs} />
       <Drawer.Screen name="Settings" component={SettingScreen} />
+      <Drawer.Screen name="Charts" component={Chart} />
     </Drawer.Navigator>
   );
 }

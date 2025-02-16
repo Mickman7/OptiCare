@@ -5,9 +5,11 @@ import { FIREBASE_APP,FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig';
 import { collection, getDocs } from "firebase/firestore";
 import { Pressable } from 'react-native-gesture-handler';
 import UserItem from '../components/UserItem';
+import DefaultProfile from '../assets/DefaultProfileImage.png'
+import Chart from '../components/Chart';
 
 
-const img = "https://example.com/default-avatar.png"
+const img  = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
 
 const currentUser = FIREBASE_AUTH.currentUser?.uid;
 
@@ -98,14 +100,20 @@ const Home = ({route}) => {
         <Pressable style={styles.button} onPress={handleEvent}>
           <Text>Add Event</Text>
         </Pressable>
-        <Text>{currentUser}</Text>
+      </View>
+      
+      <View style={styles.userContainer}>
+        <Text>Recent Contacts</Text>
+        <ScrollView horizontal={true}>
+        {userInfo.map((user, index) => (
+          <UserItem.UserCard key={index} image={img} name={user.firstName}/>
+          ))}
+        </ScrollView>
       </View>
 
-      <ScrollView horizontal={true}>
-      {userInfo.map((user, index) => (
-        <UserItem.UserCard key={index} image={img} name={user.firstName}/>
-        ))}
-      </ScrollView>
+      <View>
+        <Chart/>
+      </View>
 
     </View>
   )
@@ -132,5 +140,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  userContainer: {
+    marginVertical: 15,
+    marginHorizontal: 10
   }
 })

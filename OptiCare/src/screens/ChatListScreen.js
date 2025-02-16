@@ -83,7 +83,6 @@ export default ChatListScreen;
 
 const styles = StyleSheet.create({
     ItemContainer: {
-        borderWidth: 1,
         padding: 5,
         marginVertical: 1,
     }

@@ -1,7 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, browserLocalPersistence, setPersistence} from 'firebase/auth';
-import { getFirestore, Firestore } from 'firebase/firestore';
+import { getAuth, initializeAuth, getReactNativePersistence, setPersistence } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore } from 'firebase/firestore';
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -22,18 +23,14 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const FIREBASE_APP = initializeApp(firebaseConfig);
-const FIREBASE_AUTH = getAuth(FIREBASE_APP);
+const FIREBASE_AUTH = initializeAuth(FIREBASE_APP);
+setPersistence(FIREBASE_AUTH, getReactNativePersistence(AsyncStorage))
+  .then(() => console.log("Auth persistence set"))
+  .catch((error) => console.error("Error setting persistence:", error)); 
 const FIREBASE_DB = getFirestore(FIREBASE_APP); 
 
 
 
-setPersistence(FIREBASE_AUTH, browserLocalPersistence)
-  .then(() => {
-    console.log('Authentication state persistence is set to local.');
-  })
-  .catch((error) => {
-    console.error('Error setting persistence:', error);
-  });
 
 export { FIREBASE_APP, FIREBASE_AUTH, FIREBASE_DB };
 
