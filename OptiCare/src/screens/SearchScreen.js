@@ -23,13 +23,6 @@ const SearchScreen = () => {
   const [searchVal, setSearchVal] = useState('');
   const [filteredUsers, setFilteredUsers] = useState(userInfo);
 
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [age, setAge] = useState('')
-  const [address, setAddress] = useState('')
-  const [phone, setPhone] = useState('')
-  const [isStaff, setIsStaff] = useState(false)
-  const [occupation, setOccupation] = useState('')
 
 
   const getUsers = async () => {
@@ -38,7 +31,6 @@ const SearchScreen = () => {
       const userData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setUserInfo(userData);
       setFilteredUsers(userData); // Initialize filteredUsers with all users
-      console.log(filteredUsers)
 
     } catch (err) {
       console.log('Fetch Error: ', err);
@@ -50,14 +42,11 @@ const SearchScreen = () => {
     setSearchVal(text);
     if (text === '') {
       setFilteredUsers(userInfo);
-      console.log(filteredUsers)
     } else {
       const filtered = userInfo.filter((user) =>
         user.firstName.toLowerCase().startsWith(text.toLowerCase())
     );
       setFilteredUsers(filtered);
-      console.log(filteredUsers)
-
 
     }
   };

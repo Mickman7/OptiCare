@@ -35,7 +35,7 @@ const UserDetailsScreen = ({navigation, route}) => {
         const userId = FIREBASE_AUTH.currentUser.uid;
         const userEmail = FIREBASE_AUTH.currentUser.email;
     
-        // Check if the required details are present
+        
         if (!firstName || !lastName || !address || !dob || !phone || !speciality) {
             console.error("All fields must be filled out.");
             return;
@@ -59,7 +59,7 @@ const UserDetailsScreen = ({navigation, route}) => {
             await addDoc(collection(FIREBASE_DB, 'users'), userDetails);
             console.log('User details submitted successfully!');
     
-            // Navigate to MainDrawer and pass the user data
+        
             navigation.navigate('MainDrawer', {
                 userId,
                 firstName,

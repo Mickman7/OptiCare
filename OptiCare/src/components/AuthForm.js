@@ -40,32 +40,20 @@ const InputText = ({label, value, onChange, isPassword}) => {
     );
 }
 
-const InputSelect = ({label, prompt, options, value, onChange}) => {
-
-    const selectListData = options.map((option) => ({
-        key: option.value,
-        value: option.label,
-      }));
-
-
-    return(
-        <View style={styles.container}>
-            <Text style={styles.itemLabel}>{label}</Text>
-            <SelectList
-                setSelected={onChange}
-                data={selectListData}
-                placeholder={prompt}
-                defaultOption={selectListData.find((item) => item.key === value)}
-                boxStyles={styles.selectListBoxStyle}
-                dropdownStyles={styles.selectListDropdownStyle}
-            >
-                
-
-            </SelectList>
-        </View>
-
+const InputSelect = ({ label, options, selectedValue, onValueChange }) => {
+    return (
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>{label}</Text>
+        <SelectList
+          data={options.map((option) => ({ key: option, value: option }))}
+          setSelected={onValueChange} // Pass the selected key to onValueChange
+          defaultOption={{ key: selectedValue, value: selectedValue }}
+          placeholder="Select an option"
+        />
+      </View>
     );
-}
+  };
+  
 
 
 const AuthButton = ({label, onPress}) => {
@@ -157,9 +145,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'semibold'
     },
-      toggleText: {
+    toggleText: {
         color: 'green'
-      }
+    },
+    inputContainer: {
+        marginBottom: 15,
+      },
 })
 
 export default AuthForm
