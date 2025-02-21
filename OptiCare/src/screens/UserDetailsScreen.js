@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, navigate } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, navigate, Alert } from 'react-native'
 import React, { useState } from 'react'
 import AuthForm from '../components/AuthForm'
 import { FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig';
@@ -37,7 +37,7 @@ const UserDetailsScreen = ({navigation, route}) => {
     
         
         if (!firstName || !lastName || !address || !dob || !phone || !speciality) {
-            console.error("All fields must be filled out.");
+            Alert.alert("All fields must be filled out.");
             return;
         }
     

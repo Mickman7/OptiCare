@@ -23,6 +23,7 @@ import ChatScreen from './src/screens/ChatScreen';
 import SettingScreen from './src/screens/SettingScreen';
 import ChatListScreen from './src/screens/ChatListScreen';
 import UserDetailsScreen from './src/screens/UserDetailsScreen';
+import PatientDetailsForm from './src/components/PatientDetailsForm';
 
 import Chart from './src/components/Chart'; //Temp
 
@@ -38,7 +39,7 @@ const Tab = createBottomTabNavigator();
 
 function ChatNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="ChatList" component={ChatListScreen} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
     </Stack.Navigator>
@@ -88,7 +89,7 @@ function DrawerNavigator({navigation}) {
     <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />}>
       <Drawer.Screen name="Main" component={BottomTabs} />
       <Drawer.Screen name="Settings" component={SettingScreen} />
-      <Drawer.Screen name="Charts" component={Chart} />
+      <Drawer.Screen name="Patient info" component={PatientDetailsForm} />
     </Drawer.Navigator>
   );
 }

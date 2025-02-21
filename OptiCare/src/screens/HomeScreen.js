@@ -27,7 +27,6 @@ const Home = ({route}) => {
 
   // const {firstName, lastName, email, photoURL, address, dob, phone, speciality} = route.params;
 
-  // Handle sending event data to Firebase
   const handleEvent = async () => {
     console.log('working...');
     if (!formValue.trim() || !time.trim() || !type.trim() || !info.trim()) return; // Prevent empty messages
@@ -44,12 +43,12 @@ const Home = ({route}) => {
     try {
       await addDoc(collection(FIREBASE_DB, "infoCards"), eventData);
       console.log("Event successfully sent!");
-      setSendValue(""); // Clear input after sending
+      setSendValue(""); 
     } catch (error) {
       console.error("Error creating event:", error);
     }
 
-    setSendValue(''); // Clear input after sending
+    setSendValue(''); 
   };
 
 
@@ -111,7 +110,7 @@ const Home = ({route}) => {
         </ScrollView>
       </View>
 
-      <View>
+      <View style={styles.chartContainer}>
         <Chart/>
       </View>
 
@@ -144,5 +143,11 @@ const styles = StyleSheet.create({
   userContainer: {
     marginVertical: 15,
     marginHorizontal: 10
+  },
+  chartContainer: {
+    padding: 5,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })

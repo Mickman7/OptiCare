@@ -92,7 +92,7 @@ const EventForm = ({ onClose, selectedDate }) => {
 
         <AuthForm.InputSelect
           label="Type of Event"
-          options={['Meeting', 'Consultation', 'External Event']}
+          options={['Meeting', 'Consultation', 'Appointment', 'External Event']}
           selectedValue={type}
           onValueChange={(value) => setType(value)} 
         />
@@ -127,9 +127,9 @@ const styles = StyleSheet.create({
     },
     exitBtn: {
         position: 'absolute',
-        top: 8,              // Adjust top spacing as needed
-        right: 8,             // Adjust left spacing as needed
-        zIndex: 1,            // Ensure the button is above other elements
+        top: 8,              
+        right: 8,             
+        zIndex: 1,            
         padding:5,
     },
     submitButton: {

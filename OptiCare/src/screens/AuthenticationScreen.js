@@ -14,7 +14,7 @@ const Login = ({navigation, route}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [user, setUser] = useState(null); // Track user authentication state
+    const [user, setUser] = useState(null); 
     const [loading, setLoading] = useState('');
     const [isLogin, setIsLogin] = useState(false);
 
@@ -49,10 +49,8 @@ const Login = ({navigation, route}) => {
           console.log('User signed in successfully!');
 
         } else {
-          // Sign up
           await createUserWithEmailAndPassword(auth, email, password);
 
-            // Navigate to MainDrawer and pass user data
             navigation.navigate('Details');
             console.log('User created successfully!');
         }

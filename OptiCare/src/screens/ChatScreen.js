@@ -27,26 +27,21 @@ const ChatScreen = ({ route }) => {
 
  useEffect(() => {
     const fetchMessages = async () => {
-      // Create a reference to the messages subcollection and order by timestamp
       const messagesQuery = query(
         collection(db, "chats", chatId, "messages"),
         orderBy("timestamp")
       );
 
-      // Get the messages from Firestore
       const querySnapshot = await getDocs(messagesQuery);
 
-      // Map through the querySnapshot to extract the data and document ID
       const messagesData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      // Set the messages to state
       setMessages(messagesData);
     };
 
-    // Call the function to fetch messages
     fetchMessages();
   }, [chatId]);
 
@@ -67,7 +62,7 @@ const ChatScreen = ({ route }) => {
     try {
       await addDoc(messagesRef, messageData);
 
-      // Update lastMessage in chat document
+      // Update lastMessage in chat collection
       const chatRef = doc(FIREBASE_DB, 'chats', chatId);
       await updateDoc(chatRef, {
         lastMessage: formValue,

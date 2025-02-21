@@ -46,9 +46,10 @@ const InputSelect = ({ label, options, selectedValue, onValueChange }) => {
         <Text style={styles.label}>{label}</Text>
         <SelectList
           data={options.map((option) => ({ key: option, value: option }))}
-          setSelected={onValueChange} // Pass the selected key to onValueChange
+          setSelected={onValueChange} 
           defaultOption={{ key: selectedValue, value: selectedValue }}
           placeholder="Select an option"
+          style={styles.selectStyles}
         />
       </View>
     );
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     label: {
-        color: 'white',
+        // color: 'white',
         fontSize: 20,
         fontWeight: 'semibold'
     },
@@ -150,7 +151,12 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         marginBottom: 15,
-      },
+        padding: 16,
+        width: 375,
+    },
+    selectStyles: {
+        
+    }
 })
 
 export default AuthForm
