@@ -6,9 +6,7 @@ import { FIREBASE_APP, FIREBASE_DB } from '../../FirebaseConfig';
 import { collection, getDocs } from "firebase/firestore";
 
 
-// import img from '../assets/veschwab.png'
-
-const img  = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+import DefaultProfileImage from '../assets/DefaultProfileImage.png'
 
 
 
@@ -69,10 +67,10 @@ const SearchScreen = () => {
         onChangeText={handleSearchChange}
         style={styles.searchInput}
       />
+      <Text>Search for users</Text>
       <ScrollView style={styles.scrollView}>
-        <Text>Search for users</Text>
         {filteredUsers.map((user, index) => (
-          <UserItem key={index} name={user.firstName + ' ' + user.lastName} speciality={user.speciality || 'No speciality given'} image={img} />
+          <UserItem key={index} name={user.firstName + ' ' + user.lastName} speciality={user.speciality || 'No speciality given'} image={DefaultProfileImage} />
         ))}
       </ScrollView>
     </View>

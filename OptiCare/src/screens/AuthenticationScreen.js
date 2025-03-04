@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, ImageBackground} from 'react-native'
 import React, { useState,useEffect } from 'react'
 import AuthForm from '../components/AuthForm'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-import { FIREBASE_AUTH } from "../../FirebaseConfig"; 
+import { FIREBASE_AUTH } from '../../FirebaseConfig'; 
 import Wallpaper from '../assets/hospital wallpaper.jpg'
 
 

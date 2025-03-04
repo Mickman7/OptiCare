@@ -7,7 +7,7 @@ import OnlineStatus from './OnlineStatus'
 const UserItem = ({name, speciality, image}) => {
   return (
     <TouchableOpacity style={styles.ItemContainer} onPress={() => console.log(`You pressed user: ${name}`)}>
-      <Image style={styles.profileImage} source={{ url: image }}/>
+      <Image style={styles.profileImage} source={image}/>
       <View style={styles.info}>
         <Text style={styles.nameText}>{name}</Text>
         <Text style={styles.UserRoleText}>Speciality: {speciality}</Text>
@@ -21,7 +21,7 @@ const UserCard = ({image, name}) => {
   return(
     <ScrollView horizontal={true}>
       <TouchableOpacity style={styles.userCardContainer} onPress={() => console.log(`You pressed user: ${name}`)}>
-        <Image style={styles.CardProfileImage} source={{ uri: image }}/>
+        <Image style={styles.CardProfileImage} source={image}/>
         <Text style={styles.nameText}>{name}</Text>
         <OnlineStatus label='Online'/>
       </TouchableOpacity>

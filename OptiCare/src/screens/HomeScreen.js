@@ -9,8 +9,6 @@ import DefaultProfile from '../assets/DefaultProfileImage.png'
 import Chart from '../components/Chart';
 
 
-const img  = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
-
 const currentUser = FIREBASE_AUTH.currentUser?.uid;
 
 
@@ -105,7 +103,7 @@ const Home = ({route}) => {
         <Text>Recent Contacts</Text>
         <ScrollView horizontal={true}>
         {userInfo.map((user, index) => (
-          <UserItem.UserCard key={index} image={img} name={user.firstName}/>
+          <UserItem.UserCard key={index} image={DefaultProfile} name={user.firstName}/>
           ))}
         </ScrollView>
       </View>
