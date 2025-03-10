@@ -80,9 +80,8 @@ const UserDetailsScreen = ({navigation, route}) => {
     
 
   return (
-    <View>
-      <Text>UserDetailsScreen</Text>
-      <ScrollView>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={{justifyContent: 'center', alignItems: 'center',}}>
         <AuthForm.InputText
             label='First name'
             value={firstName}
@@ -126,15 +125,19 @@ const UserDetailsScreen = ({navigation, route}) => {
             placeholder='Enter speciality'
         />
 
-        <AuthForm.AuthButton label='Add' onPress={sendUserDetails}/>
-
-
-
       </ScrollView>
+
+      <AuthForm.AuthButton label='Add' onPress={sendUserDetails}/>
     </View>
   )
 }
 
 export default UserDetailsScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '95%'
+    }
+})

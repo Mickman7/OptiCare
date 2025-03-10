@@ -70,7 +70,7 @@ const EventForm = ({ onClose, selectedDate }) => {
                 <Text>X</Text>
             </TouchableOpacity>
         </View>
-      <Text>EventForm</Text>
+      <Text>Add an Event</Text>
      
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -123,7 +123,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'white',
         borderWidth: 1,
-        borderRadius: 10
+        borderRadius: 10,
+        padding: 5
     },
     exitBtn: {
         position: 'absolute',

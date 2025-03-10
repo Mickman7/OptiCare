@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Button } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Button, navigate } from 'react-native'
 import React from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import OnlineStatus from './OnlineStatus'
@@ -29,7 +29,20 @@ const UserCard = ({image, name}) => {
   );
 }
 
+
+const PatientItem = ({name, nhsNumber, navigation}) => {
+  return (
+    <TouchableOpacity style={styles.ItemContainer} onPress={navigation}>
+      <View style={styles.info}>
+        <Text style={styles.nameText}>{name}</Text>
+        <Text style={styles.UserRoleText}>NHS Number: {nhsNumber}</Text>
+      </View>
+    </TouchableOpacity>
+  )
+}
+
 UserItem.UserCard = UserCard;
+UserItem.PatientItem = PatientItem;
 
 
 export default UserItem

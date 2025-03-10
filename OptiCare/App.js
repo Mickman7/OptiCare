@@ -24,6 +24,8 @@ import SettingScreen from './src/screens/SettingScreen';
 import ChatListScreen from './src/screens/ChatListScreen';
 import UserDetailsScreen from './src/screens/UserDetailsScreen';
 import PatientDetailsForm from './src/components/PatientDetailsForm';
+import PatientListScreen from './src/screens/PatientListScreen';
+import PatientProfile from './src/screens/PatientProfile';
 
 import Chart from './src/components/Chart'; //Temp
 
@@ -42,6 +44,16 @@ function ChatNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="ChatList" component={ChatListScreen} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function PatientsNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="PatientListScreen" component={PatientListScreen} />
+      <Stack.Screen name="AddPatients" component={PatientDetailsForm} />
+      <Stack.Screen name="PatientProfile" component={PatientProfile} />
     </Stack.Navigator>
   );
 }
@@ -89,7 +101,7 @@ function DrawerNavigator({navigation}) {
     <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />}>
       <Drawer.Screen name="Main" component={BottomTabs} />
       <Drawer.Screen name="Settings" component={SettingScreen} />
-      <Drawer.Screen name="Patient info" component={PatientDetailsForm} />
+      <Drawer.Screen name="Patients" component={PatientsNavigator} />
     </Drawer.Navigator>
   );
 }
@@ -111,6 +123,7 @@ export default function App({navigation}) {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Details" component={UserDetailsScreen} />
         <Stack.Screen name="MainDrawer" component={DrawerNavigator} />
+        <Stack.Screen name="AddPatient" component={PatientDetailsForm} />
       </Stack.Navigator>
     </NavigationContainer>
     </>

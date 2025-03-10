@@ -7,6 +7,7 @@ import { collection, getDocs } from "firebase/firestore";
 
 
 import DefaultProfileImage from '../assets/DefaultProfileImage.png'
+import AuthForm from '../components/AuthForm';
 
 
 
@@ -28,7 +29,7 @@ const SearchScreen = () => {
       const querySnapshot = await getDocs(collection(FIREBASE_DB, "users")); 
       const userData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setUserInfo(userData);
-      setFilteredUsers(userData); // Initialize filteredUsers with all users
+      setFilteredUsers(userData); 
 
     } catch (err) {
       console.log('Fetch Error: ', err);
