@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig';
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import DefaultProfile from '../assets/DefaultProfileImage.png'
 
 
 const profileImg  = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
@@ -64,20 +65,20 @@ const ChatListScreen = ({ navigation }) => {
     
 
     return (
-        <View>
+        <ScrollView>
             {userInfo.map((user) => (
                 <TouchableOpacity
                     key={user.userId}
                     style={styles.ItemContainer}
                     onPress={() => handleChatPress(user)}
                 >
-                    <Image style={styles.profileImage} source={ user.photoURL ?  {uri: profileImg} :{ uri: profileImg} } />
+                    <Image style={styles.profileImage} source={ user.photoURL ?  DefaultProfile : DefaultProfile } />
                     <View style={styles.info}>
                         <Text style={styles.nameText}>{user.firstName} {user.lastName}</Text>
                     </View>
                 </TouchableOpacity>
             ))}
-        </View>
+        </ScrollView>
     );
 };
 
@@ -87,7 +88,8 @@ export default ChatListScreen;
 const styles = StyleSheet.create({
     ItemContainer: {
         padding: 10,
-        borderWidth: 1,
+        margin: 10,
+        borderBottomWidth: 0.5,
         flexDirection: 'row',
         alignItems: 'center'
 

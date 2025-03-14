@@ -44,7 +44,7 @@ const PatientListScreen = ({navigation, route}) => {
 
       useEffect(() => {
         getPatients();
-      }, [filteredUsers]);
+      }, []);
 
 
   return (

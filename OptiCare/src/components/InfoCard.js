@@ -12,16 +12,22 @@ const InfoCard = ({date, time, eventType, info}) => {
     <View style={styles.left}>
         <Text style={styles.date}>{date}</Text>
         <Text style={styles.time}>{time}</Text>
-        <Text style={styles.eventType}>{eventType}</Text>
+        <Text style={styles.eventType}>Type: {eventType}</Text>
         <Text style={styles.infoBox}>{info}</Text>
     </View>
       <View style={styles.right}>
-        <View style={styles.checkBox}></View>
-        <Text>Lorem Ipsum</Text>
-        <View style={styles.checkBox}></View>
-        <Text>Lorem Ipsum</Text>
-        <View style={styles.checkBox}></View>
-        <Text>Lorem Ipsum</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+          <View style={styles.checkBox}></View>
+          <Text>Lorem Ipsum</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+          <View style={styles.checkBox}></View>
+          <Text>Lorem Ipsum</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+          <View style={styles.checkBox}></View>
+          <Text>Lorem Ipsum</Text>
+        </View>
       </View>
     </View>
   )
@@ -47,7 +53,9 @@ const styles = StyleSheet.create({
 
     },
     date: {
-
+      color: '#13AE85',
+      fontSize: 25,
+      fontWeight: 'bold'
     },
     time: {
 
@@ -56,20 +64,25 @@ const styles = StyleSheet.create({
 
     },
     infoBox: {
-
+      width: 200,
+      height: 'auto',
+      padding: 5,
+      marginVertical: 2,
+      backgroundColor: 'lightgrey',
     },
     right: {
         borderWidth: 1,
         flexDirection: 'column',
+        justifyContent: 'space-evenly',
         padding: 5,
         borderRadius: 5,
-        flexDirection: 'column'
-
+        height: 100
     },
     checkBox: {
         borderWidth: 1,
-        width: 5,
-        height: 5,
+        width: 10,
+        height: 10,
+        marginRight: 5
     }
 
 })

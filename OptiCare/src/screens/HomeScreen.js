@@ -18,9 +18,7 @@ const Home = ({route}) => {
   const [sendValue, setSendValue] = useState('');
   const [formValue, setFormValue] = useState([{date: '05/02/2025', time: '15:00', type: 'Event', info: 'this is sent data test'}]); 
   const [userInfo, setUserInfo] = useState([])
-  const [time, setTime] = useState('');
-  const [type, setType] = useState('');
-  const [info, setInfo] = useState('');
+  
 
 
   // const {firstName, lastName, email, photoURL, address, dob, phone, speciality} = route.params;
@@ -52,7 +50,7 @@ const Home = ({route}) => {
 
   const getSchedule = async () => {
     try {
-      const querySnapshot = await getDocs(collection(FIREBASE_DB, "infoCards")); 
+      const querySnapshot = await getDocs(collection(FIREBASE_DB, "events")); 
       const scheduleData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
       setInfoValue(scheduleData);
     } catch (err) {
@@ -74,10 +72,13 @@ const Home = ({route}) => {
 
   useEffect(() => {
     getSchedule(); 
-    handleEvent();
     getUsers();
 
-  }, []);
+  }, [infoValue, userInfo]);
+
+  useEffect(() => {
+    handleEvent();
+  },[])
 
   return (
     <View>
@@ -109,6 +110,7 @@ const Home = ({route}) => {
       </View>
 
       <View style={styles.chartContainer}>
+        <Text>Schedule Volume</Text>
         <Chart/>
       </View>
 
@@ -144,8 +146,5 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     padding: 5,
-    borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
   }
 })

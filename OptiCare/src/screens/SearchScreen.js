@@ -83,7 +83,7 @@ export default SearchScreen
 const styles = StyleSheet.create({
   searchContainer: {
     alignItems: 'center',
-    margin: 20,
+    margin: 15,
 
   },
   searchInput: {
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     overflow: 'scroll',
-    width: '100%'
+    width: '100%',
+    height: '100%'
   }
 })

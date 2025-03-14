@@ -1,22 +1,36 @@
-import { StyleSheet, Text, View, TouchableOpacity, KeyboardAvoidingView, Platform, Alert } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, KeyboardAvoidingView, Platform, Alert, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import AuthForm from './AuthForm'
+import DateTimePicker from '@react-native-community/datetimepicker'
+
 
 const EventForm = ({ onClose, selectedDate }) => {
 
     const [date, setDate] = useState(selectedDate ? selectedDate : currentDate);
+    const [time, setTime] = useState('')
     const [title, setTitle] = useState('');
     const [info, setInfo] = useState('');
     const [type, setType] = useState('No Type');
     const [organiser, setOrganiser] = useState('');
+    const [showPicker, setShowPicker] = useState(false);
+
+  
 
 
 
     const currentDate = new Date().toISOString().split('T')[0];
     const currentUser = FIREBASE_AUTH.currentUser;
 
+
+    const onChange = (event, selectedTime) => {
+      setShowPicker(Platform.OS === 'ios'); 
+      const hours = selectedTime.getHours().toString().padStart(2, '0');
+      const minutes = selectedTime.getMinutes().toString().padStart(2, '0');
+      const formattedTime = `${hours}:${minutes}`;
+      setTime(formattedTime ? formattedTime : 'N/A');
+    };
 
 
 
@@ -45,7 +59,9 @@ const EventForm = ({ onClose, selectedDate }) => {
             title: title,
             info: info,
             type: type,
+            time: time,
             organiser: organiser,
+            createdBy: currentUser.uid,
             createdAt: serverTimestamp(),
         };
       
@@ -64,7 +80,7 @@ const EventForm = ({ onClose, selectedDate }) => {
       };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.exitBtn}>
             <TouchableOpacity onPress={onClose}>
                 <Text>X</Text>
@@ -97,6 +113,13 @@ const EventForm = ({ onClose, selectedDate }) => {
           onValueChange={(value) => setType(value)} 
         />
 
+        <DateTimePicker
+          value={new Date()}
+          mode="time"
+          display="default"
+          onChange={onChange}
+        />
+
         <AuthForm.InputText
             label='Event  organiser'
             value={organiser}
@@ -109,7 +132,7 @@ const EventForm = ({ onClose, selectedDate }) => {
         </TouchableOpacity>
 
 
-    </View>
+    </ScrollView>
   )
 }
 
@@ -117,14 +140,15 @@ export default EventForm
 
 const styles = StyleSheet.create({
     container: {
-        marginVertical: '50%',
+        marginVertical: '35%',
+        width: 400,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white',
         borderWidth: 1,
         borderRadius: 10,
-        padding: 5
+        padding: 10
     },
     exitBtn: {
         position: 'absolute',
@@ -132,6 +156,8 @@ const styles = StyleSheet.create({
         right: 8,             
         zIndex: 1,            
         padding:5,
+        width: 30,
+        height: 30
     },
     submitButton: {
         width: 150,

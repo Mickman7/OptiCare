@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     height: 350,
   },
   item: {
-    backgroundColor: 'lightblue',
+    backgroundColor: '#13AE85',
     flex: 1,
     borderRadius: 5,
     padding: 10,

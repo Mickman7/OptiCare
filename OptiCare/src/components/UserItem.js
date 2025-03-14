@@ -50,11 +50,10 @@ export default UserItem
 const styles = StyleSheet.create({
     ItemContainer: {
         padding: 10,
-        borderWidth: 1,
+        borderBottomWidth: 0.5,
         margin: 5,
         flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: 10,
         width: 385
     },
     userCardContainer: {

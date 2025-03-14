@@ -1,11 +1,10 @@
-import React, { useActionState, useEffect, useState, navigate } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { useActionState, useEffect, useState, navigate, } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Button, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { createDrawerNavigator,DrawerContentScrollView, DrawerItemList,DrawerItem } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthState } from 'react-firebase-hooks/auth'
 import 'firebase/firestore'
@@ -27,7 +26,8 @@ import PatientDetailsForm from './src/components/PatientDetailsForm';
 import PatientListScreen from './src/screens/PatientListScreen';
 import PatientProfile from './src/screens/PatientProfile';
 
-import Chart from './src/components/Chart'; //Temp
+import BottomBar from './src/components/BottomBar';
+import CustomDrawerContent from './src/components/CustomDrawerContent';
 
 
 import { FIREBASE_AUTH } from './FirebaseConfig';
@@ -60,7 +60,7 @@ function PatientsNavigator() {
 
 
 
-function BottomTabs() {
+function BottomTabs({navigation}) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -74,6 +74,7 @@ function BottomTabs() {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
+      tabBar={(props) => <BottomBar{...props}/>}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Calendar" component={CalendarScreen} />
@@ -84,22 +85,36 @@ function BottomTabs() {
 }
 
 
-function CustomDrawerContent(props) {
-  return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <TouchableOpacity onPress={() => console.log('Open profile')}>
-        <Text>Profile</Text>
-      </TouchableOpacity>
-    </DrawerContentScrollView>
-  );
-}
+
+
+// function CustomDrawerContent(props) {
+//   return (
+//     <DrawerContentScrollView {...props}>
+//       <DrawerItemList {...props} />
+//       <TouchableOpacity onPress={() => console.log('Open profile')}>
+//         <Text>Profile</Text>
+//       </TouchableOpacity>
+//     </DrawerContentScrollView>
+//   );
+// }
 
 function DrawerNavigator({navigation}) {
 
+  const openNotifications = () => {
+    Alert.alert('Notifications Opened');
+  }
+
   return (
     <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen name="Main" component={BottomTabs} />
+      <Drawer.Screen 
+        name="Main" 
+        component={BottomTabs} 
+        options={{
+          headerRight: () => (
+            <Ionicons name='notifications' size={20} color='black' style={{ marginRight: 15 }} onPress={openNotifications} />
+          ),
+        }}
+      />
       <Drawer.Screen name="Settings" component={SettingScreen} />
       <Drawer.Screen name="Patients" component={PatientsNavigator} />
     </Drawer.Navigator>
@@ -138,5 +153,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  
  
 });

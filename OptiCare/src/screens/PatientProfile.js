@@ -79,7 +79,7 @@ const PatientProfile = ({route}) => {
         </View>
         <AuthForm.AuthButton
             label='Add Note'
-            onPress={addNotes}
+            onPress={() => console.log('Note added')}
         />
     </View>
   )

@@ -82,22 +82,25 @@ const Chart = () => {
   };
 
   const chartConfig = {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#ffffff',
+    backgroundGradientFrom: '#ffffff', // Gradient start (white)
+    backgroundGradientTo: '#ffffff', // Gradient end (white)
     decimalPlaces: 0, 
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    
   };
 
 
   return (
     <View style={styles.container}>
-      <Text>Schedule Volume</Text>
       
       <BarChart
         data={data}
         width={screenWidth}
         height={300}
         chartConfig={chartConfig}
+        style={styles.chart}
       />
     </View>
     
@@ -108,6 +111,12 @@ export default Chart
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: '#ffffff',
   },
+  chart: {
+    width: 'auto',
+    marginLeft: 0
+  }
 })
