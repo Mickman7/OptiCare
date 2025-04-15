@@ -83,9 +83,10 @@ const Home = ({route}) => {
   return (
     <View>
       <View style={styles.scheduleContainer}>
+        <Text style={styles.titles}>Upcoming Events</Text>
         <ScrollView style={styles.schedule} horizontal={true}>
           {infoValue.length > 0 ? (
-            infoValue.map((info) => (
+            infoValue.slice(0,3).map((info) => (
               <InfoCard key={info.id} date={info.date} time={info.time} eventType={info.type} info={info.info} />
             ))
           ) : (
@@ -95,13 +96,13 @@ const Home = ({route}) => {
 
         </ScrollView>
 
-        <Pressable style={styles.button} onPress={handleEvent}>
+        {/* <Pressable style={styles.button} onPress={handleEvent}>
           <Text>Add Event</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
       
       <View style={styles.userContainer}>
-        <Text>Recent Contacts</Text>
+        <Text style={styles.titles}>Recent Contacts</Text>
         <ScrollView horizontal={true}>
         {userInfo.map((user, index) => (
           <UserItem.UserCard key={index} image={DefaultProfile} name={user.firstName}/>
@@ -110,7 +111,7 @@ const Home = ({route}) => {
       </View>
 
       <View style={styles.chartContainer}>
-        <Text>Schedule Volume</Text>
+        <Text style={styles.titles}>Schedule Volume</Text>
         <Chart/>
       </View>
 
@@ -121,12 +122,19 @@ const Home = ({route}) => {
 export default Home
 
 const styles = StyleSheet.create({
+  titles: {
+    alignSelf: 'flex-start',
+    marginLeft: 5,
+    fontWeight: 'bold'
+
+  },
   scheduleContainer: {
     alignItems: 'center',
     marginVertical: 10,
   },
   schedule: {
     flexDirection: 'row',
+    marginVertical: 5
   },
   button: {
     width: 150,
@@ -141,7 +149,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   userContainer: {
-    marginVertical: 15,
+    marginVertical: 30,
     marginHorizontal: 10
   },
   chartContainer: {

@@ -60,20 +60,20 @@ function PatientsNavigator() {
 
 
 
-function BottomTabs({navigation}) {
+function BottomTabs() {
+
+  const openNotifications = () => {
+    Alert.alert('Notifications Opened');
+  }
+
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
-          if (route.name === 'Home') iconName = 'home';
-          else if (route.name === 'Search') iconName = 'search';
-          else if (route.name === 'Calendar') iconName = 'calendar';
-          else if (route.name === 'Chat') iconName = 'mail';
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-      })}
+      screenOptions={{headerShown: false}}
+      options={{
+        headerRight: () => (
+          <Ionicons name='notifications' size={20} color='black' style={{ marginRight: 15 }} onPress={openNotifications} />
+        ),
+      }}
       tabBar={(props) => <BottomBar{...props}/>}
     >
       <Tab.Screen name="Home" component={Home} />
@@ -87,36 +87,14 @@ function BottomTabs({navigation}) {
 
 
 
-// function CustomDrawerContent(props) {
-//   return (
-//     <DrawerContentScrollView {...props}>
-//       <DrawerItemList {...props} />
-//       <TouchableOpacity onPress={() => console.log('Open profile')}>
-//         <Text>Profile</Text>
-//       </TouchableOpacity>
-//     </DrawerContentScrollView>
-//   );
-// }
+
 
 function DrawerNavigator({navigation}) {
 
-  const openNotifications = () => {
-    Alert.alert('Notifications Opened');
-  }
-
   return (
     <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen 
-        name="Main" 
-        component={BottomTabs} 
-        options={{
-          headerRight: () => (
-            <Ionicons name='notifications' size={20} color='black' style={{ marginRight: 15 }} onPress={openNotifications} />
-          ),
-        }}
-      />
-      <Drawer.Screen name="Settings" component={SettingScreen} />
-      <Drawer.Screen name="Patients" component={PatientsNavigator} />
+      <Drawer.Screen name="Main" component={BottomTabs} />
+
     </Drawer.Navigator>
   );
 }
@@ -139,6 +117,8 @@ export default function App({navigation}) {
         <Stack.Screen name="Details" component={UserDetailsScreen} />
         <Stack.Screen name="MainDrawer" component={DrawerNavigator} />
         <Stack.Screen name="AddPatient" component={PatientDetailsForm} />
+        <Stack.Screen name="Settings" component={SettingScreen} />
+        <Stack.Screen name="Patients" component={PatientsNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
     </>

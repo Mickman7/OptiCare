@@ -1,19 +1,22 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native'
 import React from 'react'
 import { DrawerContentScrollView, DrawerItemList,DrawerItem } from '@react-navigation/drawer';
 import { Ionicons } from '@expo/vector-icons'
+import { FIREBASE_AUTH } from '../../FirebaseConfig';
 
 
 const CustomDrawerContent = (props) => {
 
-    const drawConfig = [
-        { name: 'Main', icon: 'phone-portrait', label: 'Main' },
-        { name: 'Settings', icon: 'settings', label: 'Search' },
-        { name: 'Notifications', icon: 'notifications', label: 'Notifications' },
-        { name: 'Privacy', icon: 'lock', label: 'Notifications' },
-        { name: 'Help', icon: 'help-circle', label: 'Profile' },
-        { name: 'LogOut', icon: 'log-out', label: 'Profile' },
-      ];
+      const handleSignOut = () => {
+        FIREBASE_AUTH.signOut()
+          .then(() => {
+            props.navigation.navigate('Login')
+            Alert.alert('Signed out successfully');
+          })
+          .catch((error) => {
+            Alert.alert('Error signing out', error.message);
+          });
+      };
 
     return (
         <DrawerContentScrollView {...props}>
@@ -22,43 +25,55 @@ const CustomDrawerContent = (props) => {
                 <Text>Profile</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.drawerItems} onPress={() => console.log('Open profile')}>
-                <Ionicons name='phone-portrait' size={20}/>
-                <Text>Main</Text>
+            <TouchableOpacity style={styles.drawerItems} onPress={() => props.navigation.navigate('Patients')}>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                    <Ionicons name='phone-portrait-outline' size={20} style={{marginRight: 8}}/>
+                    <Text>Patient List</Text>
+                </View>
                 <Ionicons name='chevron-forward' size={20} style={{}}/>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.drawerItems} onPress={() => console.log('Open profile')}>
-            <Ionicons name='settings' size={20}/>
-                <Text>Settings</Text>
+            <TouchableOpacity style={styles.drawerItems} onPress={() => Alert.alert('Open Settings')}>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                    <Ionicons name='settings-outline' size={20} style={{marginRight: 8}}/>
+                    <Text>Settings</Text>
+                </View>
                 <Ionicons name='chevron-forward' size={20}/>
 
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.drawerItems} onPress={() => console.log('Open profile')}>
-            <Ionicons name='notifications' size={20}/>
-                <Text>Notifications</Text>
+            <TouchableOpacity style={styles.drawerItems} onPress={() => Alert.alert('Open Notifications')}>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                    <Ionicons name='notifications-outline' size={20} style={{marginRight: 8}}/>
+                    <Text>Notifications</Text>
+                </View>
                 <Ionicons name='chevron-forward' size={20}/>
 
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.drawerItems} onPress={() => console.log('Open profile')}>
-            <Ionicons name='lock-closed' size={20}/>
-                <Text>Privacy & Security</Text>
+            <TouchableOpacity style={styles.drawerItems} onPress={() => Alert.alert('Open Privacy & Security')}>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                    <Ionicons name='lock-closed-outline' size={20} style={{marginRight: 8}}/>
+                    <Text>Privacy & Security</Text>
+                </View>
                 <Ionicons name='chevron-forward' size={20}/>
 
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.drawerItems} onPress={() => console.log('Open profile')}>
-            <Ionicons name='help-circle' size={20}/>
-                <Text>Help & Support</Text>
+            <TouchableOpacity style={styles.drawerItems} onPress={() => Alert.alert('Open Help & Support')}>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                    <Ionicons name='help-circle-outline' size={20} style={{marginRight: 8}}/>
+                    <Text>Help & Support</Text>
+                </View>
                 <Ionicons name='chevron-forward' size={20}/>
 
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.drawerItems} onPress={() => console.log('Open profile')}>
-            <Ionicons name='log-out' size={20}/>
-                <Text>Log Out</Text>
+            <TouchableOpacity style={styles.drawerItems} onPress={handleSignOut}>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                    <Ionicons name='log-out-outline' size={20} style={{marginRight: 8}}/>
+                    <Text>Log Out</Text>
+                </View>
                 <Ionicons name='chevron-forward' size={20}/>
 
             </TouchableOpacity>
@@ -70,16 +85,17 @@ export default CustomDrawerContent
 
 const styles = StyleSheet.create({
     drawerItems: {
-        borderWidth: 1,
+        borderBottomWidth: 1,
         paddingHorizontal: 10,
         paddingVertical: 20,
         flexDirection: 'row',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         alignItems: 'center'
     },
     profileItem: {
         borderWidth: 1,
         height: 200,
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 10
     },
 })
