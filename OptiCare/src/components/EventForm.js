@@ -1,83 +1,73 @@
 import { StyleSheet, Text, View, TouchableOpacity, KeyboardAvoidingView, Platform, Alert, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, updateDoc, doc, setDoc } from 'firebase/firestore';
 import AuthForm from './AuthForm'
 import DateTimePicker from '@react-native-community/datetimepicker'
 
 
 const EventForm = ({ onClose, selectedDate }) => {
 
-    const [date, setDate] = useState(selectedDate ? selectedDate : currentDate);
-    const [time, setTime] = useState('')
+    const [date, setDate] = useState(selectedDate || currentDate);
+    const [time, setTime] = useState(null);
+    const [pickerTime, setPickerTime] = useState(new Date()); // Initialize with current time
     const [title, setTitle] = useState('');
     const [info, setInfo] = useState('');
     const [type, setType] = useState('No Type');
     const [organiser, setOrganiser] = useState('');
     const [showPicker, setShowPicker] = useState(false);
 
-  
-
-
-
     const currentDate = new Date().toISOString().split('T')[0];
     const currentUser = FIREBASE_AUTH.currentUser;
 
-
     const onChange = (event, selectedTime) => {
-      setShowPicker(Platform.OS === 'ios'); 
-      const hours = selectedTime.getHours().toString().padStart(2, '0');
-      const minutes = selectedTime.getMinutes().toString().padStart(2, '0');
-      const formattedTime = `${hours}:${minutes}`;
-      setTime(formattedTime ? formattedTime : 'N/A');
+      if (selectedTime) {
+        setPickerTime(selectedTime); // Update pickerTime to the selected value
+        const hours = selectedTime.getHours().toString().padStart(2, '0');
+        const minutes = selectedTime.getMinutes().toString().padStart(2, '0');
+        const formattedTime = `${hours}:${minutes}`;
+        setTime(formattedTime); // Update time
+      }
     };
 
-
-
-      const addEvent = async () => {
-        if (!currentUser) {
-          console.log('No user is currently logged in.');
-          return;
-        }
-      
-        if (!selectedDate) {
-          console.log('No date is selected.');
-          return;
-        }
-
-        if (!title.trim() || !info.trim() || !organiser.trim()) {
-            Alert.alert('Error', 'Please fill all fields.');
-            return;
-          }
-      
-        console.log('Selected Date:', selectedDate); 
-      
-        const eventRef = collection(FIREBASE_DB, 'events');
-      
+    const addEvent = async () => {
+      if (!currentUser) {
+        Alert.alert('Error', 'No user is currently logged in.');
+        return;
+      }
+    
+      if (!selectedDate) {
+        Alert.alert('Error', 'No date is selected.');
+        return;
+      }
+  
+      if (!title.trim() || !info.trim() || !organiser.trim()) {
+        Alert.alert('Error', 'Please fill all fields.');
+        return;
+      }
+    
+      try {
+        const eventRef = doc(collection(FIREBASE_DB, 'events')); 
         const eventData = {
-            date: date ? date : currentDate,
-            title: title,
-            info: info,
-            type: type,
-            time: time,
-            organiser: organiser,
-            createdBy: currentUser.uid,
-            createdAt: serverTimestamp(),
+          eventId: eventRef.id, 
+          date: date || currentDate,
+          title,
+          info,
+          type,
+          time: time || 'N/A',
+          organiser,
+          createdBy: currentUser.uid,
+          createdAt: serverTimestamp(),
         };
-      
-        console.log('Event Data:', eventData); 
-      
-        try {
-            const docRef = await addDoc(eventRef, eventData);
-      
-            console.log('Event submitted successfully with ID:', docRef.id);
-            Alert.alert('Success', 'Event submitted successfully!');
-      
-            onClose();
-        } catch (err) {
-          console.log('Error creating event:', err);
-        }
-      };
+    
+        await setDoc(eventRef, eventData); 
+        Alert.alert('Success', 'Event submitted successfully!');
+        onClose();
+      } catch (err) {
+        console.error('Error creating event:', err);
+        Alert.alert('Error', 'Failed to create event.');
+      }
+    };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -114,7 +104,7 @@ const EventForm = ({ onClose, selectedDate }) => {
         />
 
         <DateTimePicker
-          value={new Date()}
+          value={pickerTime} // Use pickerTime to retain the selected value
           mode="time"
           display="default"
           onChange={onChange}
@@ -155,9 +145,12 @@ const styles = StyleSheet.create({
         top: 8,              
         right: 8,             
         zIndex: 1,            
-        padding:5,
+        padding: 5,
+        margin: 5,
         width: 30,
-        height: 30
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     submitButton: {
         width: 150,

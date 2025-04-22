@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import InfoCard from '../components/InfoCard'
 import { FIREBASE_APP,FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig';
 import { collection, getDocs } from "firebase/firestore";
-import { Pressable } from 'react-native-gesture-handler';
 import UserItem from '../components/UserItem';
 import DefaultProfile from '../assets/DefaultProfileImage.png'
 import Chart from '../components/Chart';

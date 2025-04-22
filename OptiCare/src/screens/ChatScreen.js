@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, TextInput, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig';
-import { collection, query, orderBy, addDoc, serverTimestamp, onSnapshot, updateDoc, doc, where, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, addDoc, serverTimestamp, onSnapshot, updateDoc, doc, where, getDocs, deleteDoc } from 'firebase/firestore';
 import { Pressable } from 'react-native-gesture-handler';
 
 const ChatScreen = ({ route }) => {
@@ -9,6 +9,10 @@ const ChatScreen = ({ route }) => {
   const currentUser = FIREBASE_AUTH.currentUser;
   const [messages, setMessages] = useState([]);
   const [formValue, setFormValue] = useState('');
+  const [selectedMessage, setSelectedMessage] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editValue, setEditValue] = useState('');
+  const [editingMessageId, setEditingMessageId] = useState(null);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -85,10 +89,56 @@ const ChatScreen = ({ route }) => {
     });
   };
 
+  const handleLongPress = (message) => {
+    setSelectedMessage(message);
+    setIsModalVisible(true);
+  };
+
+  const startEditingMessage = () => {
+    setEditingMessageId(selectedMessage.id);
+    setEditValue(selectedMessage.text);
+    setIsModalVisible(false);
+  };
+
+  const saveEditedMessage = async () => {
+    if (!editValue.trim() || !editingMessageId) return;
+
+    try {
+      const messageRef = doc(FIREBASE_DB, `chats/${chatId}/messages/${editingMessageId}`);
+      await updateDoc(messageRef, { text: editValue });
+      setEditingMessageId(null);
+    } catch (error) {
+      console.error("Error saving edited message:", error);
+    }
+  };
+
+  const deleteMessage = async () => {
+    if (!selectedMessage) return;
+
+    try {
+      const messageRef = doc(FIREBASE_DB, `chats/${chatId}/messages/${selectedMessage.id}`);
+      await deleteDoc(messageRef);
+      setIsModalVisible(false);
+      setSelectedMessage(null);
+    } catch (error) {
+      console.error("Error deleting message:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.chatContainer}>
-        {messages.map((msg, i) => <ChatMessage key={i} message={msg} />)}
+        {messages.map((msg, i) => (
+          <ChatMessage
+            key={i}
+            message={msg}
+            onLongPress={() => handleLongPress(msg)}
+            isEditing={editingMessageId === msg.id}
+            editValue={editValue}
+            setEditValue={setEditValue}
+            saveEditedMessage={saveEditedMessage}
+          />
+        ))}
       </View>
 
       <View style={styles.sendMessageContainer}>
@@ -103,18 +153,47 @@ const ChatScreen = ({ route }) => {
           <Text>Send</Text>
         </Pressable>
       </View>
+
+      {isModalVisible && (
+        <Modal transparent={true} animationType="fade" visible={isModalVisible}>
+          <TouchableWithoutFeedback onPress={() => setIsModalVisible(false)}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Pressable style={styles.button} onPress={startEditingMessage}>
+                  <Text>Edit</Text>
+                </Pressable>
+                <Pressable style={[styles.button, styles.deleteButton]} onPress={deleteMessage}>
+                  <Text>Delete</Text>
+                </Pressable>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      )}
     </View>
   );
 };
 
-const ChatMessage = ({ message }) => {
+const ChatMessage = ({ message, onLongPress, isEditing, editValue, setEditValue, saveEditedMessage }) => {
   const { text, senderId } = message;
   const isSent = senderId === FIREBASE_AUTH.currentUser?.uid;
 
   return (
-    <View style={isSent ? styles.sent : styles.received}>
-      <Text style={styles.messageText}>{text}</Text>
-    </View>
+    <Pressable onLongPress={onLongPress}>
+      <View style={isSent ? styles.sent : styles.received}>
+        {isEditing ? (
+          <TextInput
+            style={styles.editInput}
+            value={editValue}
+            onChangeText={setEditValue}
+            onSubmitEditing={saveEditedMessage}
+            autoFocus
+          />
+        ) : (
+          <Text style={styles.messageText}>{text}</Text>
+        )}
+      </View>
+    </Pressable>
   );
 };
 
@@ -175,5 +254,30 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '60%',
+    alignItems: 'center',
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    marginTop: 10,
+  },
+  editInput: {
+    backgroundColor: '#FFF',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+    fontSize: 16,
+  },
 })

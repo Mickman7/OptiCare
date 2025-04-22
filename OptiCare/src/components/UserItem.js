@@ -1,20 +1,19 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Button, navigate } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
-import { ScrollView } from 'react-native-gesture-handler'
 import OnlineStatus from './OnlineStatus'
 
 
-const UserItem = ({name, speciality, image}) => {
+const UserItem = ({ name, speciality, image, onPress }) => {
   return (
-    <TouchableOpacity style={styles.ItemContainer} onPress={() => console.log(`You pressed user: ${name}`)}>
-      <Image style={styles.profileImage} source={image}/>
+    <TouchableOpacity style={styles.ItemContainer} onPress={onPress}>
+      <Image style={styles.profileImage} source={image} />
       <View style={styles.info}>
         <Text style={styles.nameText}>{name}</Text>
         <Text style={styles.UserRoleText}>Speciality: {speciality}</Text>
       </View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 
 const UserCard = ({image, name}) => {

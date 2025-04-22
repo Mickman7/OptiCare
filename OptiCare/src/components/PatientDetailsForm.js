@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity, Platform, navigate, Alert } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Platform, Alert, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import AuthForm from './AuthForm'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { ScrollView } from 'react-native-gesture-handler'
 import { collection, addDoc, serverTimestamp, updateDoc, doc} from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig';
 

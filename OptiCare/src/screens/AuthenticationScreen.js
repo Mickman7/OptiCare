@@ -15,7 +15,6 @@ const Login = ({navigation, route}) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [user, setUser] = useState(null); 
-    const [loading, setLoading] = useState('');
     const [isLogin, setIsLogin] = useState(false);
 
     const auth = FIREBASE_AUTH;
@@ -35,29 +34,47 @@ const Login = ({navigation, route}) => {
     if (!email || !password) {
         console.error("Email or password is empty.");
         return;
-      }
-    
-      if (!isLogin && password !== confirmPassword) {
+    }
+
+    if (!isLogin && password !== confirmPassword) {
         console.error("Passwords do not match.");
         return;
-      }
-    
-      try {
+    }
+
+    try {
+        console.log('Attempting authentication...');
+        console.log('Email:', email);
+        console.log('Password:', password);
+
         if (isLogin) {
-          signInWithEmailAndPassword(auth, email, password);
-          navigation.navigate('MainDrawer')
-          console.log('User signed in successfully!');
-
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            console.log('User signed in successfully!');
+            navigation.navigate('MainDrawer');
         } else {
-          await createUserWithEmailAndPassword(auth, email, password);
-
-            navigation.navigate('Details');
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             console.log('User created successfully!');
+            navigation.navigate('Details');
         }
-        
-      } catch (error) {
-        console.error('Authentication error:', error.message);
-      }
+    } catch (error) {
+        console.error('Authentication error:', error); // Log the full error for debugging
+
+        switch (error.code) {
+            case 'auth/invalid-credential':
+                Alert.alert('Error', 'Invalid credentials. Please try again.');
+                break;
+            case 'auth/user-not-found':
+                Alert.alert('Error', 'No user found with this email.');
+                break;
+            case 'auth/wrong-password':
+                Alert.alert('Error', 'Incorrect password.');
+                break;
+            case 'auth/too-many-requests':
+                Alert.alert('Error', 'Too many attempts. Try again later.');
+                break;
+            default:
+                Alert.alert('Error', `Authentication failed: ${error.message}`);
+        }
+    }
   };
 
   return (

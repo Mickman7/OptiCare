@@ -5,12 +5,22 @@ import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import DefaultProfile from '../assets/DefaultProfileImage.png'
 
 
-const profileImg  = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
-
 
 const ChatListScreen = ({ navigation }) => {
     const [userInfo, setUserInfo] = useState([]);
-    const currentUser = FIREBASE_AUTH.currentUser;
+    const [currentUser, setCurrentUser] = useState(null); // Changed from direct access
+
+    useEffect(() => {
+        // Add auth state listener
+        const unsubscribe = FIREBASE_AUTH.onAuthStateChanged(user => {
+            setCurrentUser(user);
+            if (user) {
+                getUsers(); // Only fetch users if we have a current user
+            }
+        });
+
+        return unsubscribe; // Cleanup on unmount
+    }, []);
 
     const getUsers = async () => {
         try {
@@ -33,34 +43,39 @@ const ChatListScreen = ({ navigation }) => {
     }, []);
 
     const handleChatPress = async (selectedUser) => {
-        if (!currentUser) return;
-    
-        const selectedUserId = selectedUser.userId;
-        const currentUserId = currentUser.uid; 
-    
-        const chatId = [currentUserId, selectedUserId].sort().join("_");
-    
-        const chatRef = doc(FIREBASE_DB, "chats", chatId);
-        const chatSnap = await getDoc(chatRef);
-    
-        if (!chatSnap.exists()) {
-            await setDoc(chatRef, {
-                chatId,
-                participants: [currentUserId, selectedUserId],
-                lastMessage: "",
-                lastMessageTimestamp: null
-            });
+        if (!currentUser) {
+            console.log("No authenticated user");
+            navigation.navigate('Login');
+            return;
         }
-
-    
-        // Navigate to Chat Screen with the correct chatId
-        navigation.navigate('ChatScreen', { 
-            chatId, 
-            userId: selectedUserId, 
-            userFirstName: selectedUser.firstName, 
-            userLastName: selectedUser.lastName, 
-            userPhotoURL: selectedUser.photoURL 
-        });
+        
+        try {
+            const selectedUserId = selectedUser.userId;
+            const currentUserId = currentUser.uid;
+            
+            const chatId = [currentUserId, selectedUserId].sort().join("_");
+            const chatRef = doc(FIREBASE_DB, "chats", chatId);
+            const chatSnap = await getDoc(chatRef);
+            
+            if (!chatSnap.exists()) {
+                await setDoc(chatRef, {
+                    chatId,
+                    participants: [currentUserId, selectedUserId],
+                    lastMessage: "",
+                    lastMessageTimestamp: null
+                });
+            }
+            
+            navigation.navigate('ChatScreen', { 
+                chatId, 
+                userId: selectedUserId, 
+                userFirstName: selectedUser.firstName, 
+                userLastName: selectedUser.lastName, 
+                userPhotoURL: selectedUser.photoURL 
+            });
+        } catch (error) {
+            console.error("Chat creation error:", error);
+        }
     };
     
 

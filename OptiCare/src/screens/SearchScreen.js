@@ -1,28 +1,19 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, scrollView, TextInput, ScrollView, SafeAreaView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import UserItem from '../components/UserItem'
-import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import { FIREBASE_APP, FIREBASE_DB } from '../../FirebaseConfig';
 import { collection, getDocs } from "firebase/firestore";
-
+import { useNavigation } from '@react-navigation/native';
 
 import DefaultProfileImage from '../assets/DefaultProfileImage.png'
 import AuthForm from '../components/AuthForm';
 
-
-
-
-
 const SearchScreen = () => {
-
+  const navigation = useNavigation();
   const [userInfo, setUserInfo] = useState([])
-
-
 
   const [searchVal, setSearchVal] = useState('');
   const [filteredUsers, setFilteredUsers] = useState(userInfo);
-
-
 
   const getUsers = async () => {
     try {
@@ -35,7 +26,6 @@ const SearchScreen = () => {
       console.log('Fetch Error: ', err);
     }
   };
-
 
   const handleSearchChange = (text) => {
     setSearchVal(text);
@@ -50,37 +40,43 @@ const SearchScreen = () => {
     }
   };
 
- 
-
   useEffect(() => {
     getUsers();
   }, []);
 
-
-  
-
-
   return (
-    <View style={styles.searchContainer}>
-      <TextInput
-        value={searchVal}
-        placeholder="Search"
-        onChangeText={handleSearchChange}
-        style={styles.searchInput}
-      />
-      <Text>Search for users</Text>
-      <ScrollView style={styles.scrollView}>
-        {filteredUsers.map((user, index) => (
-          <UserItem key={index} name={user.firstName + ' ' + user.lastName} speciality={user.speciality || 'No speciality given'} image={DefaultProfileImage} />
-        ))}
-      </ScrollView>
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.searchContainer}>
+        <TextInput
+          value={searchVal}
+          placeholder="Search"
+          onChangeText={handleSearchChange}
+          style={styles.searchInput}
+        />
+        <Text>Search for users</Text>
+        <ScrollView style={styles.scrollView}>
+          {filteredUsers.map((user, index) => (
+            <UserItem
+              key={index}
+              name={user.firstName + ' ' + user.lastName}
+              speciality={user.speciality || 'No speciality given'}
+              image={DefaultProfileImage}
+              onPress={() => navigation.navigate('UserDetails', { user })}
+            />
+          ))}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   )
 }
 
 export default SearchScreen
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'white', // Optional: Set a background color
+  },
   searchContainer: {
     alignItems: 'center',
     margin: 15,

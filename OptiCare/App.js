@@ -1,16 +1,15 @@
-import React, { useActionState, useEffect, useState, navigate, } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Button, Alert } from 'react-native';
+import 'react-native-reanimated'; 
+import React from 'react';
+import { StyleSheet, Alert, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { createDrawerNavigator,DrawerContentScrollView, DrawerItemList,DrawerItem } from '@react-navigation/drawer';
+import { createDrawerNavigator} from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthState } from 'react-firebase-hooks/auth'
 import 'firebase/firestore'
-
-// import auth from '@react-native-firebase/auth';
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 //Screens
@@ -25,13 +24,13 @@ import UserDetailsScreen from './src/screens/UserDetailsScreen';
 import PatientDetailsForm from './src/components/PatientDetailsForm';
 import PatientListScreen from './src/screens/PatientListScreen';
 import PatientProfile from './src/screens/PatientProfile';
+import EventDetailsScreen from './src/screens/EventDetailsScreen';
 
 import BottomBar from './src/components/BottomBar';
 import CustomDrawerContent from './src/components/CustomDrawerContent';
 
 
 import { FIREBASE_AUTH } from './FirebaseConfig';
-
 
 
 
@@ -77,7 +76,11 @@ function BottomTabs() {
       tabBar={(props) => <BottomBar{...props}/>}
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Calendar" component={CalendarScreen} />
+      <Tab.Screen
+        name="Calendar"
+        component={CalendarScreen}
+        initialParams={{ triggerAddEvent: false }} 
+      />
       <Tab.Screen name="Chat" component={ChatNavigator} />
       <Tab.Screen name="Search" component={SearchScreen} />
     </Tab.Navigator>
@@ -105,24 +108,36 @@ function DrawerNavigator({navigation}) {
 
 export default function App({navigation}) {
 
- const [user] = useAuthState(FIREBASE_AUTH)
+ const [user, loading] = useAuthState(FIREBASE_AUTH);
 
+ if (loading) {
+    return (
+        <GestureHandlerRootView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>Loading...</Text>
+        </GestureHandlerRootView>
+    );
+ }
+
+ if (!user) {
+    console.log("No user is logged in.");
+ }
 
   return (
-    <>
-    <NavigationContainer>
-      <StatusBar style='auto'/>
-      <Stack.Navigator initialRouteName={user ? 'MainDrawer': 'Login'} screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Details" component={UserDetailsScreen} />
-        <Stack.Screen name="MainDrawer" component={DrawerNavigator} />
-        <Stack.Screen name="AddPatient" component={PatientDetailsForm} />
-        <Stack.Screen name="Settings" component={SettingScreen} />
-        <Stack.Screen name="Patients" component={PatientsNavigator} />
-      </Stack.Navigator>
-    </NavigationContainer>
-    </>
-
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer>
+        <StatusBar style='auto'/>
+        <Stack.Navigator initialRouteName={user ? 'MainDrawer': 'Login'} screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Details" component={UserDetailsScreen} />
+          <Stack.Screen name="UserDetails" component={UserDetailsScreen} />
+          <Stack.Screen name="MainDrawer" component={DrawerNavigator} />
+          <Stack.Screen name="AddPatient" component={PatientDetailsForm} />
+          <Stack.Screen name="Settings" component={SettingScreen} />
+          <Stack.Screen name="Patients" component={PatientsNavigator} />
+          <Stack.Screen name="EventDetails" component={EventDetailsScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
 

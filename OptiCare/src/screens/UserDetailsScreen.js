@@ -1,143 +1,142 @@
-import { StyleSheet, Text, View, ScrollView, navigate, Alert } from 'react-native'
-import React, { useState } from 'react'
-import AuthForm from '../components/AuthForm'
-import { FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig';
+import { StyleSheet, Text, View, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { FIREBASE_DB } from '../../FirebaseConfig';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
-import { collection, query, orderBy, addDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
+const UserDetailsScreen = ({ route }) => {
+  const user = route.params?.user; // Safely access user
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
+  useEffect(() => {
+    if (!user) {
+      setLoading(false); // Stop loading if user is not provided
+      return;
+    }
 
-
-
-
-
-const UserDetailsScreen = ({navigation, route}) => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [photoURL, setPhotoURL] = useState('https://example.com/default-avatar.png');
-    const [address, setAddress] = useState('');
-    const [dob, setDob] = useState('');
-    const [phone, setPhone] = useState('');
-    const [speciality, setSpeciality] = useState('');
-
-
-    const messagesRef = collection(FIREBASE_DB, 'users');
-    const [user] = useAuthState(FIREBASE_AUTH);
-    // const { userId, email } = route.params;
-
-
-    const sendUserDetails = async () => {
-        if (!user) {
-            console.error("No authenticated user found.");
-            return;
+    const fetchUserDetails = async () => {
+      try {
+        const userDoc = await getDoc(doc(FIREBASE_DB, 'users', user.id));
+        if (userDoc.exists()) {
+          setUserDetails(userDoc.data());
+        } else {
+          console.log('No such user document!');
         }
-    
-        const userId = FIREBASE_AUTH.currentUser.uid;
-        const userEmail = FIREBASE_AUTH.currentUser.email;
-    
-        
-        if (!firstName || !lastName || !address || !dob || !phone || !speciality) {
-            Alert.alert("All fields must be filled out.");
-            return;
-        }
-    
-        const userDetails = {
-            userId: userId,
-            firstName: firstName,
-            lastName: lastName,
-            email: userEmail,
-            photoURL: photoURL,
-            createdAt: serverTimestamp(),
-            address: address,
-            dob: dob,
-            phone: phone,
-            speciality: speciality
-        };
-    
-        try {
-            // Save user details to Firestore
-            await addDoc(collection(FIREBASE_DB, 'users'), userDetails);
-            console.log('User details submitted successfully!');
-    
-        
-            navigation.navigate('MainDrawer', {
-                userId,
-                firstName,
-                lastName,
-                email: userEmail,
-                photoURL,
-                address,
-                dob,
-                phone,
-                speciality
-            });
-    
-        } catch (err) {
-            console.error("Error submitting user details:", err.message);
-        }
+      } catch (err) {
+        console.error('Error fetching user details:', err);
+      } finally {
+        setLoading(false);
+      }
     };
-    
-    
+
+    fetchUserDetails();
+  }, [user]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>No user data provided.</Text>
+      </View>
+    );
+  }
+
+  if (!userDetails) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>User details not found.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{justifyContent: 'center', alignItems: 'center',}}>
-        <AuthForm.InputText
-            label='First name'
-            value={firstName}
-            onChange={setFirstName}
-            placeholder='Enter first name'
-        />
-        <AuthForm.InputText
-            label='Last name'
-            value={lastName}
-            onChange={setLastName}
-            placeholder='Enter last name'
-        />
-        <AuthForm.InputText
-            label='Profile Picture'
-            value={photoURL}
-            onChange={setPhotoURL}
-            placeholder='Enter picture url'
-        />
-        <AuthForm.InputText
-            label='Adress'
-            value={address}
-            onChange={setAddress}
-            placeholder='Enter your address'
-        />
-        <AuthForm.InputText
-            label='Date of birth'
-            value={dob}
-            onChange={setDob}
-            placeholder='Enter your date of birth'
-        />
-        <AuthForm.InputText
-            label='Phone number'
-            value={phone}
-            onChange={setPhone}
-            placeholder='Enter your phone number'
-        />
-        <AuthForm.InputText
-            label='Speciality'
-            value={speciality}
-            onChange={setSpeciality}
-            placeholder='Enter speciality'
-        />
-
-      </ScrollView>
-
-      <AuthForm.AuthButton label='Add' onPress={sendUserDetails}/>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Ionicons name="arrow-back" size={24} color="black" />
+        <Text style={styles.backButtonText}>Back</Text>
+      </TouchableOpacity>
+      <Image style={styles.profileImage} source={require('../assets/DefaultProfileImage.png')} />
+      <Text style={styles.nameText}>{userDetails.firstName + ' ' + userDetails.lastName}</Text>
+      <Text style={styles.specialityText}>Speciality: {userDetails.speciality || 'No speciality given'}</Text>
+      <Text style={styles.emailText}>Email: {userDetails.email || 'No email provided'}</Text>
+      <Text style={styles.phoneText}>Phone: {userDetails.phone || 'No phone number provided'}</Text>
+      <Text style={styles.addressText}>Address: {userDetails.address || 'No address provided'}</Text>
+      <Text style={styles.dobText}>Date of Birth: {userDetails.dob || 'No date of birth provided'}</Text>
     </View>
-  )
-}
+  );
+};
 
-export default UserDetailsScreen
+export default UserDetailsScreen;
 
 const styles = StyleSheet.create({
-    container: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '95%'
-    }
-})
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 40,
+    left: 20,
+  },
+  backButtonText: {
+    fontSize: 18,
+    marginLeft: 5,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
+  },
+  nameText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  specialityText: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  emailText: {
+    fontSize: 16,
+    color: 'gray',
+    marginBottom: 10,
+  },
+  phoneText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  addressText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  dobText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  errorText: {
+    fontSize: 18,
+    color: 'red',
+  },
+});

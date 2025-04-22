@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -13,7 +13,7 @@ import CalendarScreen from '../screens/CalendarScreen';
 const Tab = createBottomTabNavigator();
 
 
-const BottomBar = ({navigation, state, onPress}) => {
+const BottomBar = ({ navigation, state, onAddPress }) => {
 
   const [isActive, setIsActive] = useState(state.index);
 
@@ -30,6 +30,14 @@ const BottomBar = ({navigation, state, onPress}) => {
     Search: 'search'
   };
 
+  const handleAddPress = () => {
+    if (state.routes[state.index].name === 'Calendar') {
+      navigation.navigate('Calendar', { triggerAddEvent: true }); // Ensure parameter is passed correctly
+    } else {
+      Alert.alert('Add button pressed'); 
+    }
+  };
+
 
   return (
     <View style={styles.tabContainer}>
@@ -39,13 +47,13 @@ const BottomBar = ({navigation, state, onPress}) => {
         style={styles.tabItem}
         onPress={() => handleTabPress(route.name, index)}
       >
-        <Ionicons name={icons[route.name]} size={30} color={isActive === index ? '#13AE85' : 'black'}/>
+        <Ionicons name={icons[route.name]} size={35} color={isActive === index ? '#13AE85' : 'black'} style={{marginHorizontal: 15}}/>
       </TouchableOpacity>
       ))}
 
 
       <TouchableOpacity
-        onPress={onPress}
+        onPress={handleAddPress}
         title='addEventBtn'
         style={styles.addEventBtn}
       >
@@ -116,28 +124,34 @@ export default BottomBar
 const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
     alignItems: 'center',
     height: 75,
     width: '100%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    position: 'absolute',
+    bottom: 0,
   },
   addEventBtn: {
     position: 'absolute',
-    top: -25, 
+    top: -30,
     left: '50%',
-    transform: [{ translateX: -30 }],
-    alignSelf: 'center',
+    transform: [{ translateX: -35 }],
     backgroundColor: '#13AE85',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5, // Adds shadow on Android
-    shadowColor: '#000', // Adds shadow on iOS
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-  }
-
-})
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+});
