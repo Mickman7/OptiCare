@@ -96,7 +96,6 @@ const CalendarScreen = ({ route }) => {
       />
 
     <View style={styles.bottomContainer}>
-      {/* Remove BottomBar here */}
     </View>
   </View>
   )
@@ -158,4 +157,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5, 
   },
+  itemText: {
+    // color: 'white',
+    fontSize: 16,
+  }
 })

@@ -25,6 +25,7 @@ import PatientDetailsForm from './src/components/PatientDetailsForm';
 import PatientListScreen from './src/screens/PatientListScreen';
 import PatientProfile from './src/screens/PatientProfile';
 import EventDetailsScreen from './src/screens/EventDetailsScreen';
+import UserProfileScreen from './src/screens/UserProfileScreen';
 
 import BottomBar from './src/components/BottomBar';
 import CustomDrawerContent from './src/components/CustomDrawerContent';
@@ -129,7 +130,7 @@ export default function App({navigation}) {
         <Stack.Navigator initialRouteName={user ? 'MainDrawer': 'Login'} screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Details" component={UserDetailsScreen} />
-          <Stack.Screen name="UserDetails" component={UserDetailsScreen} />
+          <Stack.Screen name="UserProfile" component={UserProfileScreen} />
           <Stack.Screen name="MainDrawer" component={DrawerNavigator} />
           <Stack.Screen name="AddPatient" component={PatientDetailsForm} />
           <Stack.Screen name="Settings" component={SettingScreen} />

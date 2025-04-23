@@ -61,7 +61,7 @@ const SearchScreen = () => {
               name={user.firstName + ' ' + user.lastName}
               speciality={user.speciality || 'No speciality given'}
               image={DefaultProfileImage}
-              onPress={() => navigation.navigate('UserDetails', { user })}
+              onPress={() => navigation.navigate('UserProfile', { user })}
             />
           ))}
         </ScrollView>

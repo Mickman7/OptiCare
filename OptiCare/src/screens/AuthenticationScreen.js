@@ -56,7 +56,7 @@ const Login = ({navigation, route}) => {
             navigation.navigate('Details');
         }
     } catch (error) {
-        console.error('Authentication error:', error); // Log the full error for debugging
+        console.error('Authentication error:', error); 
 
         switch (error.code) {
             case 'auth/invalid-credential':

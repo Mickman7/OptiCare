@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { FIREBASE_APP, FIREBASE_DB } from '../../FirebaseConfig';
 import { doc, getDoc, addDoc, collection } from "firebase/firestore";
 import AuthForm from '../components/AuthForm';
+import { useNavigation } from '@react-navigation/native';
+
 
 const PatientProfile = ({route}) => {
 
@@ -10,21 +12,22 @@ const PatientProfile = ({route}) => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [notes, setNotes] = useState();
+    const navigation = useNavigation();
 
-    // const addNotes = async() => {
-    //     try {
-    //         const notesCollectionRef = collection(FIREBASE_DB, 'patients', patientId, 'notes');
+    const addNotes = async() => {
+        try {
+            const notesCollectionRef = collection(FIREBASE_DB, 'patients', patientId, 'notes');
         
-    //         await addDoc(notesCollectionRef, {
-    //             notes: notes,
-    //             timestamp: new Date(), 
-    //         });
-        
-    //         console.log('Note added successfully!');
-    //     } catch (err) {
-    //     console.error('Error adding note:', err);
-    //     }
-    // }
+            await addDoc(notesCollectionRef, {
+                notes: notes,
+                timestamp: new Date(), 
+            });
+            navigation.goBack()
+            console.log('Note added successfully!');
+        } catch (err) {
+        console.error('Error adding note:', err);
+        }
+    }
 
     const getPatientsById = async () => {
         try {
@@ -79,7 +82,7 @@ const PatientProfile = ({route}) => {
         </View>
         <AuthForm.AuthButton
             label='Add Note'
-            onPress={() => console.log('Note added')}
+            onPress={addNotes}
         />
     </View>
   )

@@ -24,8 +24,7 @@ const Home = ({route}) => {
 
   const handleEvent = async () => {
     console.log('working...');
-    if (!formValue.trim() || !time.trim() || !type.trim() || !info.trim()) return; // Prevent empty messages
-
+    if (!formValue.trim() || !time.trim() || !type.trim() || !info.trim()) return; 
     const eventData = {
       date: formValue,
       time,
