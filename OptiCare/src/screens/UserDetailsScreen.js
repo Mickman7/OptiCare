@@ -1,4 +1,3 @@
-
 import { StyleSheet, Text, View, ScrollView, navigate, Alert } from 'react-native'
 import React, { useState } from 'react'
 import AuthForm from '../components/AuthForm'
@@ -74,7 +73,8 @@ const UserDetailsScreen = ({navigation, route}) => {
             });
     
         } catch (err) {
-            console.error("Error submitting user details:", err.message);
+            console.error("Error submitting user details:", err.message, err);
+            throw new Error(`Failed to submit user details: ${err.message}`);
         }
     };
     

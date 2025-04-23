@@ -74,7 +74,8 @@ const ChatListScreen = ({ navigation }) => {
                 userPhotoURL: selectedUser.photoURL 
             });
         } catch (error) {
-            console.error("Chat creation error:", error);
+            console.error("Chat creation error:", error.message, error);
+            throw new Error(`Failed to create or navigate to chat: ${error.message}`);
         }
     };
     

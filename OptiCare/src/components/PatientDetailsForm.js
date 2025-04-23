@@ -51,8 +51,9 @@ const PatientDetailsForm = ({navigation}) => {
         }else{
           Alert.alert('All fields must be entered');
         }
-      }catch(err) {
-          console.error("Error submitting patient details:", err.message)
+      } catch (err) {
+          console.error("Error submitting patient details:", err.message, err);
+          throw new Error(`Failed to submit patient details: ${err.message}`);
       }
         
     }

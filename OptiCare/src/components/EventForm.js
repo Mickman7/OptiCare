@@ -64,8 +64,8 @@ const EventForm = ({ onClose, selectedDate }) => {
         Alert.alert('Success', 'Event submitted successfully!');
         onClose();
       } catch (err) {
-        console.error('Error creating event:', err);
-        Alert.alert('Error', 'Failed to create event.');
+        console.error('Error creating event:', err.message, err);
+        throw new Error(`Failed to create event: ${err.message}`);
       }
     };
 
